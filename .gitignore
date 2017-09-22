@@ -99,3 +99,14 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# XCode Project
+*.xcodeproj
+.DS_Store
+
+# Visual Studio Project
+.vs
+
+# vim temp files
+*.swp
+
