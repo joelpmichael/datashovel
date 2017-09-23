@@ -54,10 +54,13 @@ class Shovel():
         return threads_active
 
     def Status(self):
-        return self.worker_status
+        status = {}
+        with self.worker_status_lock:
+            status = self.worker_status
+        return status
 
     def Queue(self):
-        return self.worker_queue
+        return len(self.worker_queue.keys())
 
     def _QueueFileChunk(self,src,dst,start):
         queue_key=self._CreateWorkerQueueKey()
@@ -80,11 +83,18 @@ class Shovel():
         infile.seek(start,0)
         outfile.seek(start,0)
         eof=False
+        total_bytesread=0
         while not eof:
             buffer = infile.read(self.buffersize)
             outfile.write(buffer)
 
-            if len(buffer) < self.buffersize:
+            bytesread = len(buffer)
+            total_bytesread += bytesread
+
+            if bytesread < self.buffersize:
+                eof=True
+
+            if total_bytesread >= self.chunksize:
                 eof=True
 
         infile.close()
