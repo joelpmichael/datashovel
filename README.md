@@ -9,25 +9,23 @@ Won't be faster: copying large files to or from a single HDD'
 
 >5x speedup copying FreeBSD 11-STABLE source tree
 
-root@keg:~# df -h /export/install/freebsd/11-STABLE/
-Filesystem             Size   Used  Available Capacity  Mounted on
-tank/export/install/freebsd/11-STABLE
-14T   1.5G        11T     1%    /export/install/freebsd/11-STABLE
-root@keg:~# find /export/install/freebsd/11-STABLE/ | wc -l
-147557
-
 root@keg:~# time cp -r /export/install/freebsd/11-STABLE /ssd/11-STABLE
 
 real    27m25.768s
 user    0m7.626s
 sys     2m29.502s
 
-
-root@keg:~# time datashovel.py /export/install/freebsd/11-STABLE /ssd/11-STABLE
+root@keg:~# time datashovel.py -p 8 /export/install/freebsd/11-STABLE /ssd/11-STABLE
 
 real    4m43.245s
 user    3m5.557s
 sys     2m35.544s
+
+root@keg:~# time datashovel.py -p 16 /export/install/freebsd/11-STABLE /ssd/11-STABLE
+
+real    3m25.610s
+user    2m48.048s
+sys     2m50.240s
 
 >1.5x speedup copying photos
 
@@ -56,5 +54,3 @@ root@keg:~# time datashovel.py /export/net/shatter/hd2.img /ssd/hd2.img
 real    16m46.608s
 user    1m47.935s
 sys     6m31.219s
-
-Test system details:
