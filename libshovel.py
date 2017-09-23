@@ -121,9 +121,8 @@ class Shovel():
             return key
 
     def _Worker(self):
-        self.thread = threading.current_thread()
         with self.worker_status_lock:
-            self.worker_status[self.thread.ident] = None
+            self.worker_status[threading.current_thread().ident] = None
         while True:
             # thread main loop
             # dequeue item
@@ -131,7 +130,7 @@ class Shovel():
             queue_item = []
             # update worker status with item
             with self.worker_status_lock:
-                self.worker_status[self.thread.ident] = item
+                self.worker_status[threading.current_thread().ident] = item
             # grab item from queue
             with self.worker_queue_lock:
                 queue_item = self.worker_queue[item]
@@ -141,7 +140,7 @@ class Shovel():
 
             # update worker status to idle
             with self.worker_status_lock:
-                self.worker_status[self.thread.ident] = None
+                self.worker_status[threading.current_thread().ident] = None
             # delete item from queue
             with self.worker_queue_lock:
                 del self.worker_queue[item]
